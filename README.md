@@ -5,23 +5,23 @@ A group project to create a basic linear algebra library in C++ that takes advan
 *TODO*
 
 ### Matrix products
-* T **dot**(const T& a, const T& b) -- Dot product of two matrixes.
-* T **matrix_power**(const T& a, size_t n) -- Raise a square matrix to the (natural) power n.
+* Matrix<T> **dot**(const Matrix<T>& a, const Matrix<T>& b) -- Dot product of two matrixes.
+* Matrix<T> **matrix_power**(const Matrix<T>& a, size_t n) -- Raise a square matrix to the (natural) power n.
 
 ### Decompositions
-* *TODO* **svd**(const T& a) -- Returns Singular Value Decomposition (three matrixes).
+* *TODO* **svd**(const Matrix<T>& a) -- Returns Singular Value Decomposition (three matrixes).
 
 ### Matrix eigenvalues
-* *TODO* **eig**(const T& a) -- Compute the eigenvalues and (right) eigenvectors of a square array.
+* *TODO* **eig**(const Matrix<T>& a) -- Compute the eigenvalues and (right) eigenvectors of a square array.
 
 ### Other numbers
-* Scalar **det**(const T& a) -- Compute the determinant of a matrix.
-* size_t **matrix_rank**(const T& a) -- Return matrix rank using SVD method.
-* Scalar **trace**(const T& a) -- Return the sum along main diagonal of the matrix.
+* Scalar **det**(const Matrix<T>& a) -- Compute the determinant of a matrix.
+* size_t **matrix_rank**(const Matrix<T>& a) -- Return matrix rank using SVD method.
+* Scalar **trace**(const Matrix<T>& a) -- Return the sum along main diagonal of the matrix.
 
 ### Solving equations and inverting matrixes
-* T **solve**(const T& a, const T& b) -- Solve a linear matrix equation, or system of linear scalar equations.
-* T **inv**(const T& a) -- Compute the inverse of a matrix.
+* Matrix<T> **solve**(const Matrix<T>& a, const Matrix<T>& b) -- Solve a linear matrix equation, or system of linear scalar equations.
+* Matrix<T> **inv**(const Matrix<T>& a) -- Compute the inverse of a matrix.
 
 ## How to compile
 *TODO*, but probably using make.
