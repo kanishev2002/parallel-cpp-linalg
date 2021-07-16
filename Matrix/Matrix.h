@@ -1,26 +1,35 @@
 #pragma once
+#include <iostream>
 #include <vector>
 
 template <typename T>
 class Matrix {
- private:
-  std::vector<std::vector<T>> matrix_;
+private:
+    std::vector<std::vector<T>> matrix_;
 
- public:
-  Matrix() = default;
-  Matrix(size_t rows, size_t columns);
-  Matrix(std::vector<std::vector<T>> matrix);
-  Matrix(const Matrix<T>& other);
-  Matrix(Matrix<T>&& other);
+    Matrix<T> basic_binary_op_(const Matrix<T>& other, char func_type) const;
 
-  bool operator==(const Matrix<T>& other) const;
-  bool operator!=(const Matrix<T>& other) const;
+public:
+    Matrix() = default;
+    Matrix(size_t rows, size_t columns);
+    Matrix(const std::vector<T>& vec);
+    Matrix(std::vector<T>&& vec);
+    Matrix(const std::vector<std::vector<T>>& matrix);
+    Matrix(std::vector<std::vector<T>>&& matrix);
+    Matrix(const Matrix<T>& other);
+    Matrix(Matrix<T>&& other);
 
-  Matrix<T> operator+(const Matrix<T>& other) const;
-  Matrix<T> operator-(const Matrix<T>& other) const;
-  Matrix<T> operator*(const Matrix<T>& other) const;
 
-  Matrix<T> operator[](size_t index);
+    bool operator==(const Matrix<T>& other) const;
+    bool operator!=(const Matrix<T>& other) const;
 
-  std::pair<size_t, size_t> shape() const;
+    Matrix<T> operator+(const Matrix<T>& other) const;
+    Matrix<T> operator-(const Matrix<T>& other) const;
+    Matrix<T> operator*(const Matrix<T>& other) const;
+
+    Matrix<T>& operator[](size_t index);
+    const Matrix<T>& operator[](size_t index) const;
+
+    std::pair<size_t, size_t> shape() const;
+    void print(std::ostream &out, char column_splitter='\t', char row_splitter='\n') const;
 };
