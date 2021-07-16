@@ -17,6 +17,9 @@ public:
     bool operator==(const Matrix<T>& other) const;
     bool operator!=(const Matrix<T>& other) const;
 
+    void print(std::ostream &out, char column_spliter, char row_spliter) const;
+
+
     Matrix<T> operator+(const Matrix<T>& other) const;
     Matrix<T> operator-(const Matrix<T>& other) const;
     Matrix<T> operator*(const Matrix<T>& other) const;
