@@ -1,15 +1,20 @@
 #include <iostream>
+
+#include <vector>
 #include "Matrix.h"
 #include "Matrix.cpp"
 
-#include <atomic>
-#include <thread>
-#include <string>
-
 int main() {
-    Matrix<int> matrix({{1, 2},
-                        {3, 4}});
-    matrix.print(std::cout, '\t', '\n');
-    std::cout << "\n" << matrix << "\n";
-    return 0;
+  Matrix<int> matrix_1({{1, 2}, {3, 4}});
+  Matrix<int> matrix_2 = matrix_1;
+  std::cout << (matrix_1 == matrix_2) << '\n';
+  std::cout << '\n';
+  matrix_1.print(std::cout);
+  std::cout << '\n';
+  Matrix<int> matrix_3 = matrix_1 + matrix_2;
+  matrix_3.print(std::cout);
+  std::cout << '\n';
+  //std::cout << matrix_1 << "\n";
+  return 0;
 }
+
