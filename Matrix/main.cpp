@@ -4,8 +4,15 @@
 #include "Matrix.cpp"
 
 int main() {
-  std::cout << "Hello, World!" << std::endl;
-  Matrix<int> matrix({{1, 2}, {3, 4}});
-  std::cout << (matrix == matrix) << '\n';
+  Matrix<int> matrix_1({{1, 2}, {3, 4}});
+  Matrix<int> matrix_2 = matrix_1;
+  std::cout << (matrix_1 == matrix_2) << '\n';
+  std::cout << '\n';
+  matrix_1.print(std::cout);
+  std::cout << '\n';
+  Matrix<int> matrix_3 = matrix_1 + matrix_2;
+  matrix_3.print(std::cout);
+  std::cout << '\n';
+  //std::cout << matrix_1 << "\n";
   return 0;
 }
