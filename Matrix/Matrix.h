@@ -1,10 +1,10 @@
 #pragma once
 #include <iostream>
-#include <vector>
-#include <thread>
 #include <shared_mutex>
+#include <thread>
+#include <vector>
 
-template<typename T>
+template <typename T>
 class Matrix {
  private:
   std::vector<std::vector<T>> matrix_;
@@ -27,7 +27,7 @@ class Matrix {
 
   bool operator==(const Matrix<T>& other) const;
   bool operator!=(const Matrix<T>& other) const;
-  
+
   void print(std::ostream& out, char column_separator = '\t',
              char row_separator = '\n') const;
 
@@ -39,5 +39,4 @@ class Matrix {
   const Matrix<T>& operator[](size_t index) const;
 
   std::pair<size_t, size_t> shape() const;
-  void print(std::ostream& out, char column_splitter = '\t', char row_splitter = '\n') const;
 };
