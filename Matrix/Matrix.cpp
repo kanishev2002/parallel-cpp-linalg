@@ -187,3 +187,4 @@ Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other, char func_type) co
   }
   return result;
 }
+
