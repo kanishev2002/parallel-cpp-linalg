@@ -8,6 +8,7 @@ template<typename T>
 class Matrix {
  private:
   std::vector<std::vector<T>> matrix_;
+
   Matrix<T> basic_binary_op_(const Matrix<T>& other, char func_type) const;
   mutable std::shared_mutex shared_mtx_;
 
@@ -26,6 +27,9 @@ class Matrix {
 
   bool operator==(const Matrix<T>& other) const;
   bool operator!=(const Matrix<T>& other) const;
+  
+  void print(std::ostream& out, char column_separator = '\t',
+             char row_separator = '\n') const;
 
   Matrix<T> operator+(const Matrix<T>& other) const;
   Matrix<T> operator-(const Matrix<T>& other) const;

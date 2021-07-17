@@ -1,6 +1,7 @@
 #include "Matrix.h"
 
 #include <atomic>
+#include <iostream>
 #include <thread>
 
 template<typename T>
@@ -186,5 +187,23 @@ Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other, char func_type) co
     thr.join();
   }
   return result;
+}
+
+template <typename T>
+void Matrix<T>::print(std::ostream& out, char column_separator,
+                      char row_separator) const {
+  const auto [rows, columns] = shape();
+  for (size_t i = 0; i < rows; ++i) {
+    for (size_t j = 0; j < columns; ++j) {
+      out << matrix_[i][j] << column_separator;
+    }
+    out << row_separator;
+  }
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& out, const Matrix<T>& mat) {
+  mat.print(out, '\t', '\n');
+  return out;
 }
 
