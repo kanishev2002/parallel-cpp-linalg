@@ -8,3 +8,6 @@ cmake-*
 cmake_*
 build
 _deps
+lib
+*.a
+*.cmake

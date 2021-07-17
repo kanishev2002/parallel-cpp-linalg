@@ -11,5 +11,5 @@ add_compile_options(-Wall -Wextra -pedantic -Werror)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "build")
 
 add_subdirectory(tests)
-add_subdirectory(benchmarks)
-add_subdirectory(Matrix)
+# add_subdirectory(benchmarks)
+add_subdirectory(src/Matrix)
