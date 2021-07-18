@@ -99,13 +99,13 @@ bool Matrix<T>::operator==(const Matrix<T>& other) const {
 }
 
 template <typename T>
-const Matrix<T>& Matrix<T>::operator[](size_t index) const {
+const std::vector<T>& Matrix<T>::operator[](size_t index) const {
   std::shared_lock sh_lock(shared_mtx_);
   return matrix_.at(index);
 }
 
 template <typename T>
-Matrix<T>& Matrix<T>::operator[](size_t index) {
+std::vector<T>& Matrix<T>::operator[](size_t index) {
   std::unique_lock un_lock(shared_mtx_);
   return matrix_[index];
 }
