@@ -4,7 +4,7 @@
 #include <thread>
 #include <vector>
 
-template <typename T>
+template<typename T>
 class Matrix {
  private:
   std::vector<std::vector<T>> matrix_;
@@ -34,6 +34,10 @@ class Matrix {
   Matrix<T> operator+(const Matrix<T>& other) const;
   Matrix<T> operator-(const Matrix<T>& other) const;
   Matrix<T> operator*(const Matrix<T>& other) const;
+
+  Matrix<T>& operator+=(const Matrix<T>& other);
+  Matrix<T>& operator-=(const Matrix<T>& other);
+  Matrix<T>& operator*=(const Matrix<T>& other);
 
   const std::vector<T>& operator[](size_t index) const;
   std::vector<T>& operator[](size_t index);

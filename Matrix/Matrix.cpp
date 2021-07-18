@@ -139,6 +139,30 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
 }
 
 template <typename T>
+Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& other) {
+  std::unique_lock this_un_lock(shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
+  *this = *this + other;
+  return *this;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& other) {
+  std::unique_lock this_un_lock(shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
+  *this = *this - other;
+  return *this;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
+  std::unique_lock this_un_lock(shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
+  *this = *this * other;
+  return *this;
+}
+
+template <typename T>
 std::pair<size_t, size_t> Matrix<T>::shape() const {
   std::shared_lock sh_lock(shared_mtx_);
   if (matrix_.empty()) {

@@ -14,7 +14,9 @@ int main() {
   Matrix<int> matrix_3 = matrix_1 + matrix_2;
   matrix_3.print(std::cout);
   std::cout << '\n';
-  //std::cout << matrix_1 << "\n";
+  std::cout << matrix_1 << "\n";
+  matrix_1[1][1] = 5;
+  std::cout << (matrix_1 == matrix_2) << '\n';
   return 0;
 }
 
