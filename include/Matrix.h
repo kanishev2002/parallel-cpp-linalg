@@ -35,8 +35,8 @@ class Matrix {
   Matrix<T> operator-(const Matrix<T>& other) const;
   Matrix<T> operator*(const Matrix<T>& other) const;
 
-  Matrix<T>& operator[](size_t index);
-  const Matrix<T>& operator[](size_t index) const;
+  const std::vector<T>& operator[](size_t index) const;
+  std::vector<T>& operator[](size_t index);
 
   std::pair<size_t, size_t> shape() const;
 };
