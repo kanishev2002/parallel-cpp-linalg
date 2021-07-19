@@ -32,6 +32,58 @@ TEST(Matrix, Constructors) {
     }
 }
 
+TEST(Matrix, ExceptionConstructors) {
+    std::vector<std::vector<int>> half_empty = {{}, {1}, {2}};
+    size_t exception_counter = 0;
+    try {
+        auto m = Matrix(half_empty);
+        (void)m;
+    } catch (std::invalid_argument&) {
+        ++exception_counter;
+    } catch (...) {
+        std::cerr << "Unknown exception\n";
+    }
+
+    std::vector<std::vector<int>> incorrect1 = {{1, 2}, {3}, {4, 5}};
+    try {
+        auto m = Matrix(incorrect1);
+        (void)m;
+    } catch (std::invalid_argument&) {
+        ++exception_counter;
+    } catch (...) {
+        std::cerr << "Unknown exception\n";
+    }
+
+    std::vector<std::vector<int>> incorrect2 = {{1, 2}, {3, 4}, {5}};
+    try {
+        auto m = Matrix(incorrect2);
+        (void)m;
+    } catch (std::invalid_argument&) {
+        ++exception_counter;
+    } catch (...) {
+        std::cerr << "Unknown exception\n";
+    }
+}
+
+TEST(Matrix, AssignmentOperators) {
+    Matrix<int> empty;
+    std::vector<std::vector<int>> v = {{1, 2, 3},
+                                     {4, 5, 6}};
+    empty = Matrix<int>(v);
+    ASSERT_EQ(empty[0], v[0]);
+    ASSERT_EQ(empty[1], v[1]);
+
+    empty = Matrix<int>({{1, 2},
+                         {3, 4},
+                         {5, 6}});
+    ASSERT_EQ(empty[0], {1, 2});
+    ASSERT_EQ(empty[1], {3, 4});
+    ASSERT_EQ(empty[2], {5, 6});
+
+    empty = Matrix<int>();
+    ASSERT_EQ(empty.shape(), {0, 0});
+}
+
 TEST(Matrix, CompareOperators) {
     Matrix<int> empty1, empty2;
     ASSERT_TRUE(empty1 == empty1);
@@ -44,11 +96,11 @@ TEST(Matrix, CompareOperators) {
                         {5, 6, 7, 8}});
     ASSERT_FALSE(empty1 == matrix1);
     ASSERT_FALSE(matrix1 == empty1);
-    ASSERT_TRUE(matrix1 == matrix);
+    ASSERT_TRUE(matrix1 == matrix1);
 
     ASSERT_TRUE(empty1 != matrix1);
     ASSERT_TRUE(matrix1 != empty1);
-    ASSERT_FALSE(matrix1 != matrix);
+    ASSERT_FALSE(matrix1 != matrix1);
 
     Matrix<int> matrix2({{1, 2, 3, 4},
                          {5, 6, 7, 9}});
@@ -78,6 +130,8 @@ TEST(Matrix, PlusOperator) {
     } catch (std::invalid_argument& invalid_argument) {
         ASSERT_EQ(invalid_argument.what(), "Matrixes have different shapes\n");
         caught_error = true;
+    } catch (...) {
+        std::cerr << "Unknown exception\n";
     }
     ASSERT_TRUE(caught_error);
 }
@@ -104,6 +158,8 @@ TEST(Matrix, MinusOperator) {
     } catch (std::invalid_argument& invalid_argument) {
         ASSERT_EQ(invalid_argument.what(), "Matrixes have different shapes\n");
         caught_error = true;
+    } catch (...) {
+        std::cerr << "Unknown exception\n";
     }
     ASSERT_TRUE(caught_error);
 }
@@ -133,7 +189,24 @@ TEST(Matrix, MultiplpyOperator) {
     } catch (std::invalid_argument& invalid_argument) {
         ASSERT_EQ(invalid_argument.what(), "Matrixes have different shapes\n");
         caught_error = true;
+    } catch (...) {
+        std::cerr << "Unknown exception\n";
     }
     ASSERT_TRUE(caught_error);
+}
+
+TEST(Matrix, Shape) {
+    auto zero = Matrix<int>(0, 0);
+    ASSERT_EQ(zero.shape(), {0, 0});
+    auto half_zero = Matrix<int>(0, 1);
+    ASSERT_EQ(half_zero.shape(), {0, 0});
+    auto half_zero1 = Matrix<int>(1, 0);
+    ASSERT_EQ(half_zero1.shape(), {0, 0});
+    auto m = Matrix<int>(1, 1);
+    ASSERT_EQ(m.shape(), {1, 1});
+    auto m1 = Matrix<int>(1, 2);
+    ASSERT_EQ(m1.shape(), {1, 2});
+    auto m2 = Matrix<int>(2, 1);
+    ASSERT_EQ(m2.shape(), {2, 1});
 }
 
