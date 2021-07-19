@@ -166,7 +166,7 @@ template <typename T>
 Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& other) {
   std::unique_lock this_un_lock(shared_mtx_);
   std::shared_lock other_sh_lock(other.shared_mtx_);
-  matrix_ = basic_binary_op_(other, '+').matrix_;
+  matrix_ = std::move(basic_binary_op_(other, '+').matrix_);
   return *this;
 }
 
@@ -174,7 +174,7 @@ template <typename T>
 Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& other) {
   std::unique_lock this_un_lock(shared_mtx_);
   std::shared_lock other_sh_lock(other.shared_mtx_);
-  matrix_ = basic_binary_op_(other, '-').matrix_;
+  matrix_ = std::move(basic_binary_op_(other, '-').matrix_);
   return *this;
 }
 
@@ -182,7 +182,7 @@ template <typename T>
 Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
   std::unique_lock this_un_lock(shared_mtx_);
   std::shared_lock other_sh_lock(other.shared_mtx_);
-  matrix_ = basic_binary_op_(other, '*').matrix_;
+  matrix_ = std::move(basic_binary_op_(other, '*').matrix_);
   return *this;
 }
 
