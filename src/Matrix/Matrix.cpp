@@ -193,7 +193,7 @@ Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
     return a * b;
   };
   auto [rows, columns] = shape();
-  Matrix<T> result(rows, columns);
+  std::vector<std::vector<T>> result(rows, std::vector<T>(columns));
   std::vector<std::thread> threads;
   for (size_t i = 0; i < shape().first; ++i) {
     threads.emplace_back([&, i]() {
@@ -201,13 +201,13 @@ Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
       for (size_t j = 0; j < shape().second; ++j) {
         new_row[j] = func(new_row[j], other_const);
       }
-      result.matrix_[i] = new_row;
+      result[i] = new_row;
     });
   }
   for (auto& thr : threads) {
     thr.join();
   }
-  matrix_ = result;
+  matrix_ = std:move(result);
   return *this;
 }
 
