@@ -139,6 +139,79 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
 }
 
 template <typename T>
+Matrix<T> Matrix<T>::operator*(const T& other_const) const {
+  std::shared_lock sh_lock(shared_mtx_);
+  auto func = [&](const T& a, const T& b) {
+        return a * b;
+  };
+  auto [rows, columns] = shape();
+  Matrix<T> result(rows, columns);
+  std::vector<std::thread> threads;
+  for (size_t i = 0; i < shape().first; ++i) {
+    threads.emplace_back([&, i]() {
+      std::vector<T> new_row(matrix_[i]);
+      for (size_t j = 0; j < shape().second; ++j) {
+        new_row[j] = func(new_row[j], other_const);
+      }
+      result.matrix_[i] = new_row;
+    });
+  }
+  for (auto& thr : threads) {
+    thr.join();
+  }
+  return result;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator+=(const Matrix<T>& other) {
+  std::unique_lock this_un_lock(shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
+  matrix_ = basic_binary_op_(other, '+').matrix_;
+  return *this;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator-=(const Matrix<T>& other) {
+  std::unique_lock this_un_lock(shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
+  matrix_ = basic_binary_op_(other, '-').matrix_;
+  return *this;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
+  std::unique_lock this_un_lock(shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
+  matrix_ = basic_binary_op_(other, '*').matrix_;
+  return *this;
+}
+
+template <typename T>
+Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
+  std::unique_lock un_lock(shared_mtx_);
+  auto func = [&](const T& a, const T& b) {
+    return a * b;
+  };
+  auto [rows, columns] = shape();
+  Matrix<T> result(rows, columns);
+  std::vector<std::thread> threads;
+  for (size_t i = 0; i < shape().first; ++i) {
+    threads.emplace_back([&, i]() {
+      std::vector<T> new_row(matrix_[i]);
+      for (size_t j = 0; j < shape().second; ++j) {
+        new_row[j] = func(new_row[j], other_const);
+      }
+      result.matrix_[i] = new_row;
+    });
+  }
+  for (auto& thr : threads) {
+    thr.join();
+  }
+  matrix_ = result;
+  return *this;
+}
+
+template <typename T>
 std::pair<size_t, size_t> Matrix<T>::shape() const {
   std::shared_lock sh_lock(shared_mtx_);
   if (matrix_.empty()) {
@@ -150,8 +223,6 @@ std::pair<size_t, size_t> Matrix<T>::shape() const {
 template <typename T>
 Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other,
                                       char func_type) const {
-  std::shared_lock this_sh_lock(shared_mtx_);
-  std::shared_lock other_sh_lock(other.shared_mtx_);
   if (shape() != other.shape()) {
     throw std::invalid_argument("Matrixes have different shapes\n");
   }
@@ -172,9 +243,11 @@ Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other,
   std::vector<std::thread> threads;
   for (size_t i = 0; i < shape().first; ++i) {
     threads.emplace_back([&, i]() {
+      std::vector<T> new_row(matrix_[i]);
       for (size_t j = 0; j < shape().second; ++j) {
-        result.matrix_[i][j] = func(matrix_[i][j], other.matrix_[i][j]);
+        new_row[j] = func(new_row[j], other.matrix_[i][j]);
       }
+      result.matrix_[i] = new_row;
     });
   }
   for (auto& thr : threads) {
