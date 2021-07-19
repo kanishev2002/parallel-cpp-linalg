@@ -141,9 +141,6 @@ Matrix<T> Matrix<T>::operator*(const Matrix<T>& other) const {
 template <typename T>
 Matrix<T> Matrix<T>::operator*(const T& other_const) const {
   std::shared_lock sh_lock(shared_mtx_);
-  auto func = [&](const T& a, const T& b) {
-        return a * b;
-  };
   auto [rows, columns] = shape();
   Matrix<T> result(rows, columns);
   std::vector<std::thread> threads;
@@ -151,7 +148,7 @@ Matrix<T> Matrix<T>::operator*(const T& other_const) const {
     threads.emplace_back([&, i]() {
       std::vector<T> new_row(matrix_[i]);
       for (size_t j = 0; j < shape().second; ++j) {
-        new_row[j] = func(new_row[j], other_const);
+        new_row[j] *= other_const;
       }
       result.matrix_[i] = new_row;
     });
@@ -189,9 +186,6 @@ Matrix<T>& Matrix<T>::operator*=(const Matrix<T>& other) {
 template <typename T>
 Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
   std::unique_lock un_lock(shared_mtx_);
-  auto func = [&](const T& a, const T& b) {
-    return a * b;
-  };
   auto [rows, columns] = shape();
   std::vector<std::vector<T>> result(rows, std::vector<T>(columns));
   std::vector<std::thread> threads;
@@ -199,7 +193,7 @@ Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
     threads.emplace_back([&, i]() {
       std::vector<T> new_row(matrix_[i]);
       for (size_t j = 0; j < shape().second; ++j) {
-        new_row[j] = func(new_row[j], other_const);
+        new_row[j] *= other_const;
       }
       result[i] = new_row;
     });
