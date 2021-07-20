@@ -45,4 +45,9 @@ class Matrix {
   std::vector<T>& operator[](size_t index);
 
   std::pair<size_t, size_t> shape() const;
+
+  static Matrix<T> eye(size_t size);
 };
+
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const Matrix<T>& mat);

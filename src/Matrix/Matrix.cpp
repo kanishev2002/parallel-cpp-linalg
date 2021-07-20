@@ -201,7 +201,7 @@ Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
   for (auto& thr : threads) {
     thr.join();
   }
-  matrix_ = std:move(result);
+  matrix_ = std::move(result);
   return *this;
 }
 
@@ -246,6 +246,17 @@ Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other,
   }
   for (auto& thr : threads) {
     thr.join();
+  }
+  return result;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::eye(size_t size) {
+  Matrix<T> result(size, size);
+  size_t index = 0;
+  auto default_val = T(1);
+  for (const auto& row : result.matrix_) {
+    row[index++] = default_val;
   }
   return result;
 }
