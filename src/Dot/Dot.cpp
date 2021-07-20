@@ -7,11 +7,11 @@
 
 // Finds the result of l and r dot product at given row and column
 template <typename T>
-static inline T count_at(const Matrix<T>& l, const Matrix<T>& r, size_t row,
-                         size_t col);
+static inline T CountAt(const Matrix<T>& l, const Matrix<T>& r, size_t row,
+                        size_t col);
 
 template <typename T>
-Matrix<T> dot(const Matrix<T>& l, const Matrix<T>& r) {
+Matrix<T> Dot(const Matrix<T>& l, const Matrix<T>& r) {
   std::shared_lock l_sh_lock(l.shared_mtx_);
   std::shared_lock r_sh_lock(r.shared_mtx_);
   const auto [rows1, cols1] = l.shape();
@@ -43,8 +43,8 @@ Matrix<T> dot(const Matrix<T>& l, const Matrix<T>& r) {
 }
 
 template <typename T>
-static inline T count_at(const Matrix<T>& l, const Matrix<T>& r, size_t row,
-                         size_t col) {
+static inline T CountAt(const Matrix<T>& l, const Matrix<T>& r, size_t row,
+                        size_t col) {
   T product_sum = T{};
   for (size_t i = 0; i < l.shape().second; ++i) {
     product_sum += l[row][i] * r[i][col];

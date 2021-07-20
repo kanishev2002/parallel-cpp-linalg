@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Matrix.h"
+#include "matrix.h"
 
 template <typename T>
-Matrix<T> dot(const Matrix<T>& l, const Matrix<T>& r);
+Matrix<T> Dot(const Matrix<T>& l, const Matrix<T>& r);
