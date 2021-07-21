@@ -34,6 +34,12 @@ class Matrix {
   Matrix<T> operator+(const Matrix<T>& other) const;
   Matrix<T> operator-(const Matrix<T>& other) const;
   Matrix<T> operator*(const Matrix<T>& other) const;
+  Matrix<T> operator*(const T& other) const;
+
+  Matrix<T>& operator+=(const Matrix<T>& other);
+  Matrix<T>& operator-=(const Matrix<T>& other);
+  Matrix<T>& operator*=(const Matrix<T>& other);
+  Matrix<T>& operator*=(const T& other);
 
   const std::vector<T>& operator[](size_t index) const;
   std::vector<T>& operator[](size_t index);
