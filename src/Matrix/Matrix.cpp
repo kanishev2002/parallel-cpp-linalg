@@ -201,7 +201,7 @@ Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
   for (auto& thr : threads) {
     thr.join();
   }
-  matrix_ = std:move(result);
+  matrix_ = std::move(result);
   return *this;
 }
 
