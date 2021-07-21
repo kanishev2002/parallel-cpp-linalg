@@ -3,4 +3,7 @@
 #include "Matrix.h"
 
 template <typename T>
-Matrix<T> transpose(const Matrix<T>& matrix) const;
+Matrix<T> Transpose_solo_thread(const Matrix<T>& matrix);
+
+template <typename T>
+Matrix<T> Transpose(const Matrix<T>& matrix);
