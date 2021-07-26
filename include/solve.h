@@ -1,0 +1,8 @@
+//
+// Created by ian on 25.07.2021.
+//
+
+#ifndef PARALLEL_CPP_LINALG_SOLVE_H
+#define PARALLEL_CPP_LINALG_SOLVE_H
+
+#endif //PARALLEL_CPP_LINALG_SOLVE_H

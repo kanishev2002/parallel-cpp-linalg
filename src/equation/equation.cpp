@@ -1,7 +1,7 @@
 #include "../../include/equation.h"
 
 template<typename T>
-int Equation::compose_rows<typename T>(const int &row1, const int &row2) {
+int Equation::compose_rows<typename T>(const std::vector<T>& row1, const std::vector<T>& row2) {
   if (row1.size() != row2.size()) {
     throw std::invalid_argument("Vectors have different size");
   }
@@ -13,7 +13,7 @@ int Equation::compose_rows<typename T>(const int &row1, const int &row2) {
 }
 
 template<typename T>
-int Equation::multiply_by_scalar(const int &row, const T &scalar) {
+int Equation::multiply_by_scalar(const std::vector<T>& row, const T& scalar) {
   if (scalar == T(0)) {
     throw std::invalid_argument("Cannot multiply by zero");
   }

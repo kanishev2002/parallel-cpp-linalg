@@ -1,4 +1,5 @@
 #include "../../include/det.h"
+#include "../../include/equation.h"
 
 template<typename T>
 T det(const Matrix<T>& a) {
@@ -10,13 +11,7 @@ T det(const Matrix<T>& a) {
     throw std::invalid_argument("Matrix should be square\n");
   }
 
-  using Fraction = Fraction<T>;
-  Matrix <Fraction> matrix(rows, columns);
-  for (size_t i = 0; i < rows; ++i) {
-    for (size_t j = 0; j < columns; ++j) {
-      matrix[i][j] = a[i][j];
-    }
-  }
+  Matrix<T> matrix = a;
 
   size_t cur_row = 0, cur_column = 0;
 
@@ -24,7 +19,7 @@ T det(const Matrix<T>& a) {
     size_t non_zero_row = rows, non_zero_column = columns;
     for (size_t j = cur_column; j < columns; ++j) {
       for (size_t i = cur_row; i < rows; ++i) {
-        if (matrix[i][j] != Fraction(0)) {
+        if (matrix[i][j] != T(0)) {
           non_zero_row = i;
           non_zero_column = j;
           break;
@@ -44,14 +39,15 @@ T det(const Matrix<T>& a) {
     {
       ThreadPool pool;
       for (size_t i = cur_row + 1; i < rows; ++i) {
-        if (matrix[i][non_zero_column] == Fraction(0)) {
+        if (matrix[i][non_zero_column] == T(0)) {
           continue;
         }
         pool.enqueue_task([&, i]() {
+            auto coef = -matrix[i][non_zero_column] / matrix[cur_row][non_zero_column];
             matrix[i] = Equation::compose_rows(
                     Equation::multiply_by_scalar(
                             matrix[cur_row],
-                            -matrix[i][non_zero_column] / matrix[cur_row][non_zero_column]
+                            coef
                             ),
                             matrix[i]
                     );
@@ -62,11 +58,11 @@ T det(const Matrix<T>& a) {
         cur_column = non_zero_column + 1;
     }
 
-  auto result = Fraction(1);
+  auto result = T(1);
   for (size_t i = 0; i < rows; ++i) {
     result *= matrix[i][i];
   }
 
-  return result.Numerator() / result.Denominator();
+  return result;
 }
 
