@@ -4,20 +4,26 @@
 
 template<typename T>
 Matrix<T> solve(const Matrix<T>& a, const Matrix<T>& b) {
-  std::shared_lock sh_lock_a(a.shared_mtx_);
-  std::shared_lock sh_lock_b(b.shared_mtx_);
-  auto [rows_a, columns_a] = a.shape();
-  auto [rows_b, columns_b] = b.shape();
+  size_t rows_a, columns_a;
+  size_t rows_b, columns_b;
+  Matrix<T> A, B;
 
-  if (rows_a != columns_a) {
-    throw std::invalid_argument("Matrix A should be square\n");
-  }
-  if (rows_a != rows_b) {
-    throw std::invalid_argument("Matrixes should be conformable\n");
-  }
+  {
+    std::shared_lock sh_lock_a(a.shared_mtx_);
+    std::shared_lock sh_lock_b(b.shared_mtx_);
+    std::tie(rows_a, columns_a) = a.shape();
+    std::tie(rows_b, columns_b) = b.shape();
 
-  auto A = a;
-  auto B = b;
+    if (rows_a != columns_a) {
+      throw std::invalid_argument("Matrix A should be square\n");
+    }
+    if (rows_a != rows_b) {
+      throw std::invalid_argument("Matrixes should be conformable\n");
+    }
+
+    A = a;
+    B = b;
+  }
 
   size_t cur_row = 0, cur_column = 0;
 
@@ -81,7 +87,7 @@ Matrix<T> solve(const Matrix<T>& a, const Matrix<T>& b) {
    * |            ...               |
    * |  0   0   0   0   ...     #   |
    *
-   * In case the system has only one solution, otherwise
+   * In case the system has only one solution, otherwise steps of the matrix can be arranged differently.
    * '#' is a nonzero element, '0' is a zero element and '*' could be both zero and nonzero.
    */
 
