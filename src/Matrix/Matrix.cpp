@@ -1,11 +1,11 @@
-#include "../../include/Matrix.h"
+#include "../../include/matrix.h"
 
 #include <atomic>
 #include <iostream>
 #include <thread>
 
 template <typename T>
-Matrix<T>::Matrix(size_t rows, size_t columns) {
+constexpr Matrix<T>::Matrix(size_t rows, size_t columns) {
   matrix_.resize(rows, std::vector<T>(columns));
 }
 

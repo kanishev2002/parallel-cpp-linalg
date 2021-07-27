@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Matrix.h"
+#include "matrix.h"
 
 template <typename T>
 Matrix<T> Transpose(const Matrix<T>& matrix);
