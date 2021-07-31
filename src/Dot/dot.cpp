@@ -30,7 +30,7 @@ Matrix<T> Dot(const Matrix<T>& l, const Matrix<T>& r) {
     threads.emplace_back([&, row] {
       std::vector<T> new_row(res_cols);
       for (size_t col = 0; col < res_cols; ++col) {
-        new_row[col] = count_at(l, r, row, col);
+        new_row[col] = CountAt(l, r, row, col);
       }
       result[row] = std::move(new_row);
     });
