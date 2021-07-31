@@ -30,7 +30,7 @@ ThreadPool::ThreadPool(size_t threads) {
 ThreadPool::~ThreadPool() {
   {
     std::unique_lock un_lock(mtx_);
-    for (auto& thr : threads_) {
+    for (size_t i = 0; i < threads_.size(); ++i) {
       waiting_queue_.push(func_ptr{nullptr});
     }
     cv_.notify_all();

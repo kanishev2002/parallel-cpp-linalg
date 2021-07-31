@@ -1,12 +1,12 @@
 #include "../../include/det.h"
+
 #include "../../include/equation.h"
+#include "../../include/thread_pool.h"
 
-template<typename T>
+template <typename T>
 T det(const Matrix<T>& a) {
-  size_t rows, columns;
-
   std::shared_lock sh_lock(a.shared_mtx_);
-  std::tie(rows, columns) = a.shape();
+  const auto [rows, columns] = a.shape();
   if (rows != columns) {
     throw std::invalid_argument("Matrix should be square\n");
   }
@@ -43,20 +43,16 @@ T det(const Matrix<T>& a) {
           continue;
         }
         pool.enqueue_task([&, i]() {
-            auto coef = -matrix[i][non_zero_column] / matrix[cur_row][non_zero_column];
-            matrix[i] = Equation::compose_rows(
-                    Equation::multiply_by_scalar(
-                            matrix[cur_row],
-                            coef
-                            ),
-                            matrix[i]
-                    );
-                });
-            }
-        }
-        cur_row = non_zero_row + 1;
-        cur_column = non_zero_column + 1;
+          auto coef =
+              -matrix[i][non_zero_column] / matrix[cur_row][non_zero_column];
+          matrix[i] = Equation::compose_rows(
+              Equation::multiply_by_scalar(matrix[cur_row], coef), matrix[i]);
+        });
+      }
     }
+    cur_row = non_zero_row + 1;
+    cur_column = non_zero_column + 1;
+  }
 
   auto result = T(1);
   for (size_t i = 0; i < rows; ++i) {
@@ -65,4 +61,3 @@ T det(const Matrix<T>& a) {
 
   return result;
 }
-

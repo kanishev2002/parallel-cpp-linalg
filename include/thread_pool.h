@@ -1,8 +1,9 @@
 #pragma once
 
 #include <functional>
-#include <thread>
 #include <memory>
+#include <queue>
+#include <thread>
 #include <vector>
 
 class ThreadPool {

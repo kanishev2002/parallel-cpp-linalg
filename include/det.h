@@ -2,5 +2,5 @@
 
 #include "matrix.h"
 
-template<typename T>
+template <typename T>
 T det(const Matrix<T>& a);

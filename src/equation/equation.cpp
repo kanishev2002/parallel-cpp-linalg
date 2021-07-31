@@ -1,7 +1,8 @@
 #include "../../include/equation.h"
 
-template<typename T>
-int Equation::compose_rows<typename T>(const std::vector<T>& row1, const std::vector<T>& row2) {
+template <typename T>
+std::vector<T> Equation::compose_rows(const std::vector<T>& row1,
+                                      const std::vector<T>& row2) {
   if (row1.size() != row2.size()) {
     throw std::invalid_argument("Vectors have different size");
   }
@@ -12,8 +13,9 @@ int Equation::compose_rows<typename T>(const std::vector<T>& row1, const std::ve
   return result;
 }
 
-template<typename T>
-int Equation::multiply_by_scalar(const std::vector<T>& row, const T& scalar) {
+template <typename T>
+std::vector<T> Equation::multiply_by_scalar(const std::vector<T>& row,
+                                            const T& scalar) {
   if (scalar == T(0)) {
     throw std::invalid_argument("Cannot multiply by zero");
   }
@@ -24,8 +26,7 @@ int Equation::multiply_by_scalar(const std::vector<T>& row, const T& scalar) {
   return result;
 }
 
-template<typename T>
+template <typename T>
 void Equation::swap_rows(std::vector<T>& row1, std::vector<T>& row2) {
   std::swap(row1, row2);
 }
-
