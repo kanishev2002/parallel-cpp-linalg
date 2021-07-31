@@ -4,13 +4,12 @@
 #include <thread>
 #include <vector>
 
-template<typename T>
+template <typename T>
 class Matrix {
  private:
   std::vector<std::vector<T>> matrix_;
 
   Matrix<T> basic_binary_op_(const Matrix<T>& other, char func_type) const;
-  mutable std::shared_mutex shared_mtx_;
 
  public:
   Matrix() = default;
@@ -43,4 +42,6 @@ class Matrix {
   std::vector<T>& operator[](size_t index);
 
   std::pair<size_t, size_t> shape() const;
+
+  mutable std::shared_mutex shared_mtx_;
 };
