@@ -4,6 +4,7 @@
 
 template <typename T>
 Matrix<T> Transpose_single_thread(const Matrix<T>& matrix) {
+  std::shared_lock sh_lock(matrix.shared_mtx_);
   const auto [rows, columns] = matrix.shape();
   std::vector<std::vector<T>> res_data(columns, std::vector<T>(rows));
   for (size_t i = 0; i < rows; ++i) {
