@@ -42,7 +42,7 @@ T det(const Matrix<T>& a) {
         if (matrix[i][non_zero_column] == T(0)) {
           continue;
         }
-        pool.enqueue_task([&, i]() {
+        pool.enqueue_task([&, i, cur_row, cur_column]() {
           auto coef =
               -matrix[i][non_zero_column] / matrix[cur_row][non_zero_column];
           matrix[i] = Equation::compose_rows(
