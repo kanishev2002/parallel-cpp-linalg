@@ -1,11 +1,11 @@
-#include "../../include/Matrix_Power.h"
-#include "../../include/Dot.h"
+#include "../../include/matrix_power.h"
+#include "../../include/dot.h"
 #include <cmath>
 #include <shared_mutex>
 
 template<typename T>
-Matrix<T> matrix_power(const Matrix<T>& a, size_t n) {
-  std::shared_lock(a.shared_mtx_);
+Matrix<T> MatrixPower(const Matrix<T>& a, size_t n) {
+  std::shared_lock sh_lock(a.shared_mtx_);
   if (a.shape().first != a.shape().second) {
     throw std::invalid_argument("Matrix should be square");
   }
@@ -13,10 +13,10 @@ Matrix<T> matrix_power(const Matrix<T>& a, size_t n) {
   auto tmp = a;
   while (n > 0) {
     if (n & 1) {
-      result = dot(result, tmp);
+      result = Dot(result, tmp);
       --n;
     } else {
-      tmp = dot(tmp, tmp);
+      tmp = Dot(tmp, tmp);
       n >>= 1;
     }
   }
