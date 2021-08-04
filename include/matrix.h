@@ -14,7 +14,7 @@ class Matrix {
 
  public:
   Matrix() = default;
-  Matrix(size_t rows, size_t columns);
+  constexpr Matrix(size_t rows, size_t columns);
   Matrix(const std::vector<T>& vec);
   Matrix(std::vector<T>&& vec);
   Matrix(const std::vector<std::vector<T>>& matrix);
