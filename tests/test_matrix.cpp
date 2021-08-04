@@ -2,8 +2,8 @@
 
 #include <utility>
 
-#include "../include/Matrix.h"
-#include "../src/Matrix/Matrix.cpp"
+#include "../include/matrix.h"
+#include "../src/matrix/matrix.cpp"
 
 TEST(Matrix, DefaultConstructors) {
   Matrix<int> empty, default_mat(3, 4);
