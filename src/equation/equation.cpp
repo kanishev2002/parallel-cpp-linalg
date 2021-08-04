@@ -2,13 +2,13 @@
 
 template <typename T>
 std::vector<T> Equation::compose_rows(const std::vector<T>& row1,
-                                      const std::vector<T>& row2) {
+                                      const std::vector<T>& row2, const T& coef) {
   if (row1.size() != row2.size()) {
     throw std::invalid_argument("Vectors have different size");
   }
   std::vector<T> result;
   for (size_t i = 0; i < row1.size(); ++i) {
-    result.emplace_back(row1[i] + row2[i]);
+    result.emplace_back(row1[i] + coef * row2[i]);
   }
   return result;
 }
