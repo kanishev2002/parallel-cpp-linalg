@@ -3,9 +3,9 @@
 #include <include/transpose.h>
 
 #include <chrono>
-#include <src/Matrix/matrix.cpp>
-#include <src/Transpose/transpose.cpp>
-#include <src/Transpose/transpose_single_thread.cpp>
+#include <src/matrix/matrix.cpp>
+#include <src/transpose/transpose.cpp>
+#include <src/transpose/transpose_single_thread.cpp>
 
 TEST(Matrix, Transpose_2_by_3) {
   Matrix<int> mat({{1, 2, 3}, {4, 5, 6}});
