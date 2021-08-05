@@ -10,9 +10,7 @@ Matrix<T> Split_row_single_thread(const Matrix<T>& mat, const int64_t from, cons
   }
   std::shared_lock sh_lock(mat.shared_mtx_);
   std::vector<std::vector<T>> res(((std::abs(to - from) - 1) / std::abs(step) + 1), std::vector<T>(mat.shape().second));
-  //std::cout<<"\n"<<"     "<<((std::abs(to - from) - 1) / std::abs(step) + 1)<<"\n";
   for (int64_t row = from, new_row = 0; (row < to && step>0) || (row > to && step<0); row += step, new_row++) {
-    //std::cout<<new_row<<"   "<<row<<"\n";
     res[new_row] = mat[row];
   }
   return (Matrix<T>(std::move(res)));
