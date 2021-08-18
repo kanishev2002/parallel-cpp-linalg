@@ -195,25 +195,29 @@ std::vector<std::vector<T>> SolveMultipleSolutions(Matrix<T>&& a, const T& delta
         }
     }
 
-    for (size_t i = 0; i < non_zero_positions.size(); ++i) {
+    {
         ThreadPool pool;
-        pool.enqueue_task([&, i]() {
-            auto row = non_zero_positions[i];
-            for (size_t j = 0; j < dependent_positions.size(); ++j) {
-                auto column = dependent_positions[j];
-                result[row][j] = -a[i][column];
-            }
-        });
+        for (size_t i = 0; i < non_zero_positions.size(); ++i) {
+            pool.enqueue_task([&, i]() {
+                auto row = non_zero_positions[i];
+                for (size_t j = 0; j < dependent_positions.size(); ++j) {
+                    auto column = dependent_positions[j];
+                    result[row][j] = -a[i][column];
+                }
+            });
+        }
     }
-    for (size_t i = 0; i < dependent_positions.size(); ++i) {
+    {
         ThreadPool pool;
-        pool.enqueue_task([&, i]() {
-            auto row = dependent_positions[i];
-            for (size_t j = 0; j < dependent_positions.size(); ++j) {
-                result[row][i] = T();
-            }
-            result[row][i] = T(1);
-        });
+        for (size_t i = 0; i < dependent_positions.size(); ++i) {
+            pool.enqueue_task([&, i]() {
+                auto row = dependent_positions[i];
+                for (size_t j = 0; j < dependent_positions.size(); ++j) {
+                    result[row][i] = T();
+                }
+                result[row][i] = T(1);
+            });
+        }
     }
 
     return result;

@@ -76,15 +76,11 @@ bool IsUpTriangularSingular(const Matrix<T>& a, const T& delta) {
     for (size_t i = 0; i < a.shape().first; ++i) {
         for (size_t j = 0; j < i; ++j) {
             if (abs(a[i][j]) > delta) {
-                is_up_tr[i] = false;
-                break;
+                return false;
             }
         }
     }
-    if (std::all_of(is_up_tr.begin(), is_up_tr.end(), [](auto x) { return x; })) {
-        return true;
-    }
-    return false;
+    return true;
 }
 
 template<typename T>
@@ -194,11 +190,11 @@ std::pair<std::vector<T>, Matrix<T>> EigSingular(const Matrix<T>& a, const T& de
         for (size_t i = 0; i < rows; ++i) {
             tmp[i][i] -= eig_val;
         }
-        return SolveMultipleSolutions(std::move(tmp));
+        return SolveMultipleSolutionsSingular(std::move(tmp));
     };
 
     Matrix<T> mat = a;
-    while (!IsUpTriangular(mat, delta)) {
+    while (!IsUpTriangularSingular(mat, delta)) {
         auto [Q, R] = FindQR(mat);
         mat = Dot(R, Q);
     }
