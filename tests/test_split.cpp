@@ -55,7 +55,6 @@ TEST(Matrix, Split_step_row) {
   ASSERT_EQ(mat_check_3,mat_split_3);
 }
 
-/*
 TEST(Matrix, Split_row_simple_big) {
   constexpr size_t rows = 10000;
   constexpr size_t columns = 100000;
@@ -81,8 +80,6 @@ TEST(Matrix, Split_row_simple_big) {
 
   EXPECT_LE(diff.count(), diff_single.count());
 }
-*/
-
 
 TEST(Matrix, Split_simple_column) {
   Matrix<int> mat({{1,2,3},{4,5,6},{7,8,9},{10,11,12}});
@@ -121,7 +118,6 @@ TEST(Matrix, Split_step_column) {
   ASSERT_EQ(mat_check_3,mat_split_3_single);
   ASSERT_EQ(mat_check_3,mat_split_3);
 }
-
 
 TEST(Matrix, Split_column_simple_big) {
   constexpr size_t rows = 10000;
