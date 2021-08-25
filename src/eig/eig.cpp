@@ -62,7 +62,7 @@ std::pair<Matrix<T>, Matrix<T>> FindQR(const Matrix<T>& a) {
     }
     auto result = mat_tr[i];
     for (size_t j = 0; j < i; ++j) {
-      result = Equation::compose_rows(result, tmp_GrSchmidt[j], T(-1));
+      result = Equation::compose_rows(result, tmp_GrSchmidt[j], -T(1));
     }
     return result;
   };
@@ -227,7 +227,7 @@ template<typename T>
 std::pair<std::vector<T>, Matrix<T>> Eig(const Matrix<T>& a, const T& delta) {
   std::shared_lock sh_lock(a.shared_mtx_);
 
-  if (det(a) == T()) {
+  if (Det(a) == T()) {
     throw std::invalid_argument("Singular matrix\n");
   }
 

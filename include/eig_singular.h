@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Matrix.h"
+#include "matrix.h"
 
 template<typename T>
 std::pair<Matrix<T>, Matrix<T>> FindQRSingular(const Matrix<T>& a);

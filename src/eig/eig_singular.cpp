@@ -3,6 +3,7 @@
 #include "../../include/det.h"
 #include "../../include/dot.h"
 #include "../../include/transpose.h"
+#include <cmath>
 
 template<typename T>
 std::pair<Matrix<T>, Matrix<T>> FindQRSingular(const Matrix<T>& a) {
@@ -49,7 +50,7 @@ std::pair<Matrix<T>, Matrix<T>> FindQRSingular(const Matrix<T>& a) {
               Q_tr[j],
               prod / scalar_products[j]
           ),
-          T(-1));
+          -T(1));
     }
     return result;
   };
@@ -178,7 +179,7 @@ template<typename T>
 std::pair<std::vector<T>, Matrix<T>> EigSingular(const Matrix<T>& a, const T& delta) {
   std::shared_lock sh_lock(a.shared_mtx_);
 
-  if (det(a) == T()) {
+  if (Det(a) == T()) {
     throw std::invalid_argument("Singular matrix\n");
   }
 
