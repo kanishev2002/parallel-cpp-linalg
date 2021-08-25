@@ -10,7 +10,7 @@
 #include <src/matrix/matrix.cpp>
 #include <utility>
 
-TEST(Matrix, Simple_dot) {
+TEST(Dot, Simple_dot) {
   Matrix<int> mat_a({{1, 2, 3}, {4, 5, 6}});
   Matrix<int> mat_b({{1, 2}, {3, 4}, {5, 6}});
   Matrix<int> mat_ab({{22, 28}, {49, 64}});
@@ -18,7 +18,7 @@ TEST(Matrix, Simple_dot) {
   ASSERT_EQ(mat_ab, Dot_single_thread(mat_a, mat_b));
 }
 
-TEST(Matrix, Big_dot) {
+TEST(Dot, Big_dot) {
   int row_1 = 200, col_1_row_2 = 200, col_2 = 200;
   Matrix<int> mat_a(row_1, col_1_row_2);
   Matrix<int> mat_b(col_1_row_2, col_2);
