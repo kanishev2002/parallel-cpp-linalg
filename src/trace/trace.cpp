@@ -17,8 +17,8 @@ T Trace(const Matrix<T>& a) {
   size_t begin = 0;
   for (size_t i = 0; i < n_threads; ++i) {
     size_t end = i + 1 == n_threads ? rows : begin + range_size;
-    threads.emplace_back([&, i, rows = rows](auto begin, auto end) {
-      T cur_result = T(0);
+    threads.emplace_back([&, i](auto begin, auto end) {
+      T cur_result = T();
       for (size_t index = begin; index < end; ++index) {
         cur_result += a[index][index];
       }
@@ -27,7 +27,7 @@ T Trace(const Matrix<T>& a) {
     begin += range_size;
   }
 
-  T result = T(0);
+  T result = T();
   for (size_t i = 0; i < n_threads; ++i) {
     threads[i].join();
     result += cur_results[i];
