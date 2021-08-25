@@ -1,8 +1,8 @@
-#include "../../include/equation.h"
-#include "../../include/solve.h"
-#include "../../include/thread_pool.h"
+#include <include/equation.h>
+#include <include/solve.h>
+#include <include/thread_pool.h>
 
-template<typename T>
+template <typename T>
 Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
   size_t rows_a, columns_a;
   size_t rows_b, columns_b;
@@ -57,21 +57,8 @@ Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
         }
         pool.enqueue_task([&, i]() {
           auto coef = -A[i][non_zero_column] / A[cur_row][non_zero_column];
-          A[i] = Equation::compose_rows(
-              Equation::multiply_by_scalar(
-                  A[cur_row],
-                  coef
-              ),
-              A[i]
-          );
-
-          B[i] = Equation::compose_rows(
-              Equation::multiply_by_scalar(
-                  B[cur_row],
-                  coef
-              ),
-              B[i]
-          );
+          A[i] = Equation::compose_rows(A[i], A[cur_row], coef);
+          B[i] = Equation::compose_rows(B[i], B[cur_row], coef);
         });
       }
     }
@@ -87,8 +74,10 @@ Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
    * |            ...               |
    * |  0   0   0   0   ...     #   |
    *
-   * In case the system has only one solution, otherwise steps of the matrix can be arranged differently.
-   * '#' is a nonzero element, '0' is a zero element and '*' could be both zero and nonzero.
+   * In case the system has only one solution, otherwise steps of the matrix can
+   * be arranged differently.
+   * '#' is a nonzero element, '0' is a zero element and '*' could be both zero
+   * and nonzero.
    */
 
   for (size_t index = rows_a - 1; index > 0; --index) {
@@ -102,21 +91,8 @@ Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
       }
       pool.enqueue_task([&, i]() {
         auto coef = -A[i][index] / A[index][index];
-        A[i] = Equation::compose_rows(
-            Equation::multiply_by_scalar(
-                A[index],
-                coef
-            ),
-            A[i]
-        );
-
-        B[i] = Equation::compose_rows(
-            Equation::multiply_by_scalar(
-                B[index],
-                coef
-            ),
-            B[i]
-        );
+        A[i] = Equation::compose_rows(A[i], A[index], coef);
+        B[i] = Equation::compose_rows(B[i], B[index], coef);
       });
     }
   }
@@ -137,8 +113,8 @@ Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
    * |            ...               |
    * |  0   0   0   0   ...     1   |
    *
-   * There is no need to reduce elements of A though, we can just divide B[i] by A[i][i]
-   * (the only nonzero element in i-th row)
+   * There is no need to reduce elements of A though, we can just divide B[i] by
+   * A[i][i] (the only nonzero element in i-th row)
    */
 
   ThreadPool pool;
