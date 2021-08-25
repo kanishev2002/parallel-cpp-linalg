@@ -3,7 +3,7 @@
 #include "../../include/thread_pool.h"
 
 template<typename T>
-Matrix<T> solve(const Matrix<T>& a, const Matrix<T>& b) {
+Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
   size_t rows_a, columns_a;
   size_t rows_b, columns_b;
   Matrix<T> A, B;
@@ -31,7 +31,7 @@ Matrix<T> solve(const Matrix<T>& a, const Matrix<T>& b) {
     size_t non_zero_row = rows_a, non_zero_column = columns_a;
     for (size_t j = cur_column; j < columns_a; ++j) {
       for (size_t i = cur_row; i < rows_a; ++i) {
-        if (A[i][j] != T(0)) {
+        if (A[i][j] != T()) {
           non_zero_row = i;
           non_zero_column = j;
           break;
@@ -52,7 +52,7 @@ Matrix<T> solve(const Matrix<T>& a, const Matrix<T>& b) {
     {
       ThreadPool pool;
       for (size_t i = cur_row + 1; i < rows_a; ++i) {
-        if (A[i][non_zero_column] == T(0)) {
+        if (A[i][non_zero_column] == T()) {
           continue;
         }
         pool.enqueue_task([&, i]() {
@@ -92,12 +92,12 @@ Matrix<T> solve(const Matrix<T>& a, const Matrix<T>& b) {
    */
 
   for (size_t index = rows_a - 1; index > 0; --index) {
-    if (A[index][index] == T(0)) {
+    if (A[index][index] == T()) {
       throw std::invalid_argument("Singular matrix\n");
     }
     ThreadPool pool;
     for (size_t i = 0; i < index; ++i) {
-      if (A[i][index] == T(0)) {
+      if (A[i][index] == T()) {
         continue;
       }
       pool.enqueue_task([&, i]() {
