@@ -1,4 +1,4 @@
-#include "../../include/thread_pool.h"
+#include <include/thread_pool.h>
 
 ThreadPool::ThreadPool(size_t threads) {
   if (threads == 0) {

@@ -1,4 +1,4 @@
-#include "../../include/matrix.h"
+#include <include/matrix.h>
 
 #include <atomic>
 #include <iostream>

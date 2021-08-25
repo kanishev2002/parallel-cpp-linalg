@@ -1,4 +1,4 @@
-#include "../../include/transpose_single_thread.h"
+#include <include/transpose_single_thread.h>
 
 #include <vector>
 

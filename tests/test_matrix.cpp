@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
+#include <include/matrix.h>
 
+#include <src/matrix/matrix.cpp>
 #include <utility>
-
-#include "../include/matrix.h"
-#include "../src/matrix/matrix.cpp"
 
 TEST(Matrix, DefaultConstructors) {
   Matrix<int> empty, default_mat(3, 4);

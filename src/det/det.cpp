@@ -1,7 +1,6 @@
-#include "../../include/det.h"
-
-#include "../../include/equation.h"
-#include "../../include/thread_pool.h"
+#include <include/det.h>
+#include <include/equation.h>
+#include <include/thread_pool.h>
 
 template <typename T>
 T det(const Matrix<T>& a) {

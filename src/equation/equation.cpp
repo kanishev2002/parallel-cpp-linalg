@@ -1,8 +1,9 @@
-#include "../../include/equation.h"
+#include <include/equation.h>
 
 template <typename T>
 std::vector<T> Equation::compose_rows(const std::vector<T>& row1,
-                                      const std::vector<T>& row2, const T& coef) {
+                                      const std::vector<T>& row2,
+                                      const T& coef) {
   if (row1.size() != row2.size()) {
     throw std::invalid_argument("Vectors have different size");
   }
