@@ -7,7 +7,7 @@
 #include <src/transpose/transpose.cpp>
 #include <src/transpose/transpose_single_thread.cpp>
 
-TEST(Matrix, Transpose_2_by_3) {
+TEST(Transpose, Transpose_2_by_3) {
   Matrix<int> mat({{1, 2, 3}, {4, 5, 6}});
   Matrix<int> mat_t = Transpose(mat);
   mat_t.print(std::cout);
@@ -18,7 +18,7 @@ TEST(Matrix, Transpose_2_by_3) {
   ASSERT_EQ(mat_t, mat);
 }
 
-TEST(Matrix, Transpose_main_diag_symmetry) {
+TEST(Transpose, Transpose_main_diag_symmetry) {
   Matrix<int> mat({{1, 2}, {2, 3}});
   Matrix<int> mat_t = Transpose(mat);
   // mat_t.print(std::cout);
@@ -26,7 +26,7 @@ TEST(Matrix, Transpose_main_diag_symmetry) {
   ASSERT_EQ(mat_t, mat);
 }
 
-TEST(Matrix, Transpose_blank) {
+TEST(Transpose, Transpose_blank) {
   Matrix<int> mat(0, 0);
   Matrix<int> mat_t = Transpose(mat);
   // mat_t.print(std::cout);
@@ -34,7 +34,7 @@ TEST(Matrix, Transpose_blank) {
   ASSERT_EQ(mat_t, mat);
 }
 
-TEST(Matrix, Transpose_big_one) {
+TEST(Transpose, Transpose_big_one) {
   constexpr size_t rows = 1000;
   constexpr size_t columns = 2000;
   Matrix<int> mat(rows, columns);
@@ -50,7 +50,7 @@ TEST(Matrix, Transpose_big_one) {
   ASSERT_EQ(mat_t, mat_t_check);
 }
 
-TEST(Matrix, Compare_to_single_thread) {
+TEST(Transpose, Compare_to_single_thread) {
   constexpr size_t rows = 100;
   constexpr size_t columns = 200;
   Matrix<int> big_matrix(rows, columns);
@@ -77,8 +77,8 @@ TEST(Matrix, Compare_to_single_thread) {
   EXPECT_LE(mt_res.count(), st_res.count());
 }
 
-TEST(Matrix, Compare_to_single_thread_big) {
-  constexpr size_t rows = 1000;
+TEST(Transpose, Compare_to_single_thread_big) {
+  constexpr size_t rows = 10000;
   constexpr size_t columns = 2000;
   Matrix<int> big_matrix(rows, columns);
   Matrix<int> big_matrix_transposed(columns, rows);
