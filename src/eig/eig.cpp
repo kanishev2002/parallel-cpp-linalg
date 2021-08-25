@@ -1,12 +1,13 @@
-#include "../../include/eig.h"
-#include "../../include/equation.h"
-#include "../../include/det.h"
-#include "../../include/dot.h"
-#include "../../include/thread_pool.h"
-#include "../../include/transpose.h"
+#include <include/det.h>
+#include <include/dot.h>
+#include <include/eig.h>
+#include <include/equation.h>
+#include <include/thread_pool.h>
+#include <include/transpose.h>
+
 #include <cmath>
 
-template<typename T>
+template <typename T>
 std::pair<Matrix<T>, Matrix<T>> FindQR(const Matrix<T>& a) {
   std::shared_lock sh_lock(a.shared_mtx_);
 
@@ -21,14 +22,13 @@ std::pair<Matrix<T>, Matrix<T>> FindQR(const Matrix<T>& a) {
   Q_tr.reserve(columns);
   Q_tr.emplace_back(mat_tr[0]);
 
-
   // Vector with scalar products of (Q_tr[i], Q_tr[i]),
   // because these values are used several times
   std::vector<T> scalar_products;
   scalar_products.reserve(rows);
 
-  // Vector to store components that would be subtracted from the vector we are orthogonalizing.
-  // It is useful because then we can compute them parallel
+  // Vector to store components that would be subtracted from the vector we are
+  // orthogonalizing. It is useful because then we can compute them parallel
   std::vector<std::vector<T>> tmp_GrSchmidt(columns - 1);
 
   auto scalar_product = [](const std::vector<T>& v1, const std::vector<T>& v2) {
@@ -39,8 +39,8 @@ std::pair<Matrix<T>, Matrix<T>> FindQR(const Matrix<T>& a) {
     return result;
   };
 
-  // A function to orthogonalize an i-th vector of "a" via Gram-Schmidt ortogonalization
-  // using precomputed vectors of Q_tr
+  // A function to orthogonalize an i-th vector of "a" via Gram-Schmidt
+  // ortogonalization using precomputed vectors of Q_tr
   auto GrSchmidt = [&](size_t i) {
     scalar_products.emplace_back(scalar_product(Q_tr.back(), Q_tr.back()));
     {
@@ -53,10 +53,7 @@ std::pair<Matrix<T>, Matrix<T>> FindQR(const Matrix<T>& a) {
             return;
           }
           tmp_GrSchmidt[j] =
-              Equation::multiply_by_scalar(
-                  Q_tr[j],
-                  prod / scalar_products[j]
-              );
+              Equation::multiply_by_scalar(Q_tr[j], prod / scalar_products[j]);
         });
       }
     }
@@ -72,18 +69,19 @@ std::pair<Matrix<T>, Matrix<T>> FindQR(const Matrix<T>& a) {
   }
   {
     ThreadPool pool;
-    for (auto &col : Q_tr) {
+    for (auto& col : Q_tr) {
       pool.enqueue_task([&col, &scalar_product]() {
-        col = Equation::multiply_by_scalar(col, T(1) / std::sqrt(scalar_product(col, col)));
+        col = Equation::multiply_by_scalar(
+            col, T(1) / std::sqrt(scalar_product(col, col)));
       });
     }
   }
 
-  auto Q_tr_mat = Matrix<T>(std::move(Q_tr));
+  Matrix<T> Q_tr_mat(std::move(Q_tr));
   return std::make_pair(Transpose(Q_tr_mat), Dot(Q_tr_mat, a));
 }
 
-template<typename T>
+template <typename T>
 bool IsUpTriangular(const Matrix<T>& a, const T& delta) {
   std::shared_lock sh_lock(a.shared_mtx_);
 
@@ -109,14 +107,17 @@ bool IsUpTriangular(const Matrix<T>& a, const T& delta) {
   return false;
 }
 
-template<typename T>
-std::vector<std::vector<T>> SolveMultipleSolutions(Matrix<T>&& a, const T& delta) {
+template <typename T>
+std::vector<std::vector<T>> SolveMultipleSolutions(Matrix<T>&& a,
+                                                   const T& delta) {
   auto [rows_a, columns_a] = a.shape();
 
   if (rows_a != columns_a) {
     throw std::invalid_argument("Matrix \"a\" should be square\n");
   }
-  auto is_zero = [&delta](const T& t) { return t > T() ? t < delta : -t < delta; };
+  auto is_zero = [&delta](const T& t) {
+    return t > T() ? t < delta : -t < delta;
+  };
 
   // Slightly modified algorithm from "Solution" function
   size_t cur_row = 0, cur_column = 0;
@@ -160,7 +161,8 @@ std::vector<std::vector<T>> SolveMultipleSolutions(Matrix<T>&& a, const T& delta
     cur_column = non_zero_column + 1;
   }
 
-  for (size_t index = non_zero_positions.size() - (!non_zero_positions.empty()); index > 0; --index) {
+  for (size_t index = non_zero_positions.size() - (!non_zero_positions.empty());
+       index > 0; --index) {
     size_t column = non_zero_positions[index];
     ThreadPool pool;
     for (size_t i = 0; i < index; ++i) {
@@ -178,17 +180,20 @@ std::vector<std::vector<T>> SolveMultipleSolutions(Matrix<T>&& a, const T& delta
     ThreadPool pool;
     for (size_t index = 0; index < non_zero_positions.size(); ++index) {
       pool.enqueue_task([&, index]() {
-        a[index] = Equation::multiply_by_scalar(a[index], T(1) / a[index][non_zero_positions[index]]);
+        a[index] = Equation::multiply_by_scalar(
+            a[index], T(1) / a[index][non_zero_positions[index]]);
       });
     }
   }
 
-  std::vector<std::vector<T>> result(columns_a, std::vector<T>(columns_a - non_zero_positions.size()));
+  std::vector<std::vector<T>> result(
+      columns_a, std::vector<T>(columns_a - non_zero_positions.size()));
 
   std::vector<size_t> dependent_positions;
   auto next_non_zero_pos = non_zero_positions.begin();
   for (size_t i = 0; i < rows_a; ++i) {
-    if (next_non_zero_pos == non_zero_positions.end() || i != *next_non_zero_pos) {
+    if (next_non_zero_pos == non_zero_positions.end() ||
+        i != *next_non_zero_pos) {
       dependent_positions.push_back(i);
     } else {
       ++next_non_zero_pos;
@@ -223,7 +228,7 @@ std::vector<std::vector<T>> SolveMultipleSolutions(Matrix<T>&& a, const T& delta
   return result;
 }
 
-template<typename T>
+template <typename T>
 std::pair<std::vector<T>, Matrix<T>> Eig(const Matrix<T>& a, const T& delta) {
   std::shared_lock sh_lock(a.shared_mtx_);
 

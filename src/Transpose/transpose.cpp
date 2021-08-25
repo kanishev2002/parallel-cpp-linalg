@@ -1,4 +1,4 @@
-#include "../../include/transpose.h"
+#include <include/transpose.h>
 
 #include <shared_mutex>
 #include <vector>
@@ -6,7 +6,7 @@
 template <typename T>
 Matrix<T> Transpose(const Matrix<T>& matrix) {
   std::shared_lock sh_lock(matrix.shared_mtx_);
-  const auto[mat_rows, mat_columns] = matrix.shape();
+  const auto [mat_rows, mat_columns] = matrix.shape();
   size_t rows = mat_rows;
   size_t columns = mat_columns;
   std::vector<std::thread> threads;

@@ -1,15 +1,14 @@
 #include <gtest/gtest.h>
+#include <include/dot.h>
+#include <include/dot_single_thread.h>
+#include <include/matrix.h>
 
 #include <chrono>
 #include <iostream>
+#include <src/dot/dot.cpp>
+#include <src/dot/dot_single_thread.cpp>
+#include <src/matrix/matrix.cpp>
 #include <utility>
-
-#include "../include/dot.h"
-#include "../include/dot_single_thread.h"
-#include "../include/matrix.h"
-#include "../src/dot/dot.cpp"
-#include "../src/dot/dot_single_thread.cpp"
-#include "../src/matrix/matrix.cpp"
 
 TEST(Matrix, Simple_dot) {
   Matrix<int> mat_a({{1, 2, 3}, {4, 5, 6}});

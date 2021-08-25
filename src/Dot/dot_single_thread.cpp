@@ -1,4 +1,4 @@
-#include "../../include/dot_single_thread.h"
+#include <include/dot_single_thread.h>
 
 #include <shared_mutex>
 #include <stdexcept>
