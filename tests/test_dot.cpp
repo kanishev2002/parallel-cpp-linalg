@@ -52,4 +52,51 @@ TEST(Dot, Big_dot) {
 
   ASSERT_EQ(mat_ab, mat_dot);
   ASSERT_EQ(mat_ab, mat_dot_single_thread);
+  EXPECT_LE(diff2.count(), diff1.count());
+}
+
+TEST(Dot, Eye_matrix) {
+  constexpr size_t mat_size = 100;
+
+  Matrix<int64_t> eye(mat_size, mat_size);
+  for (size_t i = 0; i < mat_size; ++i) {
+    eye[i][i] = 1ll;
+  }
+  Matrix<int64_t> mat(mat_size, mat_size);
+  for (size_t i = 0; i < mat_size; ++i) {
+    for (size_t j = 0; j < mat_size; ++j) {
+      mat[i][j] = i | j;
+    }
+  }
+
+  auto start1 = std::chrono::high_resolution_clock::now();
+  auto st_dot = Dot_single_thread(eye, mat);
+  auto end1 = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> diff1(end1 - start1);
+
+  auto start2 = std::chrono::high_resolution_clock::now();
+  auto mt_dot1 = Dot(eye, mat);
+  auto end2 = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> diff2(end2 - start2);
+  std::cout << "Single thread:" << diff1.count() << '\n'
+            << "Multithread: " << diff2.count() << '\n';
+
+  auto mt_dot2 = Dot(mat, eye);
+  ASSERT_EQ(st_dot, mt_dot1);
+  ASSERT_EQ(mt_dot1, mt_dot2);
+}
+
+TEST(Dot, Error_handling) {
+  Matrix<double> a(20, 10), b(20, 20);
+  try {
+    ASSERT_NO_THROW(Dot(b, a));
+  } catch (...) {
+  }
+
+  try {
+    ASSERT_THROW(Dot(a, b), std::invalid_argument);
+  } catch (const std::invalid_argument& e) {
+    ASSERT_STREQ(e.what(),
+                 "Matrixes do not have correct shapes for multiplication");
+  }
 }
