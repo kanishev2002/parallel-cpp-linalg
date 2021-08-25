@@ -1,4 +1,4 @@
-#include "../../include/dot.h"
+#include <include/dot.h>
 
 #include <shared_mutex>
 #include <stdexcept>
@@ -22,7 +22,7 @@ Matrix<T> Dot(const Matrix<T>& l, const Matrix<T>& r) {
   }
   size_t res_rows = rows1;
   size_t res_cols = cols2;
-  Matrix<T> result(res_rows, res_cols);
+  Matrix<T> result(res_rows, 0);
 
   std::vector<std::thread> threads;
 
