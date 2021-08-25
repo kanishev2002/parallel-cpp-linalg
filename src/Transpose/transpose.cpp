@@ -8,10 +8,13 @@
 template <typename T>
 Matrix<T> Transpose(const Matrix<T>& matrix) {
   std::shared_lock sh_lock(matrix.shared_mtx_);
-  const auto [mat_rows, mat_columns] = matrix.shape();
+  const auto[mat_rows, mat_columns] = matrix.shape();
+  size_t thread_limit = std::thread::hardware_concurrency();
+  if(thread_limit == 0) {thread_limit = 8;}
   size_t rows = mat_rows;
   size_t columns = mat_columns;
   std::vector<std::thread> threads;
+  threads.reserve(thread_limit);
   std::vector<std::vector<T>> res_data(columns);
   {
     ThreadPool pool;
