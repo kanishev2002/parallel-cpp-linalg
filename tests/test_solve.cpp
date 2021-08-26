@@ -10,7 +10,6 @@ TEST(Solve, Solve_simple) {
       std::vector<std::vector<double>>({{1, 0, 0}, {0, 1, 0}, {0, 0, 1}}));
   auto B = Matrix<double>(std::vector<std::vector<double>>({{1}, {2}, {3}}));
   auto ans = Solve(A, B);
-  // ans.print(std::cout);
   ASSERT_EQ(ans, B);
 }
 
@@ -20,5 +19,17 @@ TEST(Solve, Solve_complex) {
   auto B =
       Matrix<double>(std::vector<std::vector<double>>({{100}, {200}, {300}}));
   auto ans = Solve(A, B);
-  // ans.print(std::cout);
+  auto correct_ans = Matrix<double>(std::vector<std::vector<double>>(
+      {{1.4546105}, {25.91052994}, {-20.79108884}}));  // calculated by numpy
+  ASSERT_EQ(correct_ans.shape(), ans.shape());
+  for (size_t i = 0; i < 3; ++i) {
+    ASSERT_NEAR(ans[i][0], correct_ans[i][0], 0.001);
+  }
+}
+
+TEST(Solve, No_solution) {
+  auto A = Matrix<double>(
+      std::vector<std::vector<double>>({{1, 0, 0}, {0, 1, 0}, {0, 0, 0}}));
+  auto B = Matrix<double>(std::vector<std::vector<double>>({{1}, {2}, {3}}));
+  ASSERT_THROW(Solve(A, B), std::invalid_argument);
 }
