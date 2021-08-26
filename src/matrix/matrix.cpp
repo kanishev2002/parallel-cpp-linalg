@@ -47,7 +47,7 @@ Matrix<T>::Matrix(Matrix<T>&& other) noexcept {
 template <typename T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
   std::unique_lock this_un_lock(shared_mtx_);
-  std::unique_lock other_un_lock(other.shared_mtx_);
+  std::shared_lock other_un_lock(other.shared_mtx_);
 
   if (this == &other) {
     return *this;
