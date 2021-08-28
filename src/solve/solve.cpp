@@ -2,6 +2,8 @@
 #include <include/solve.h>
 #include <include/thread_pool.h>
 
+#include <src/equation/equation.cpp>
+
 template <typename T>
 Matrix<T> Solve(const Matrix<T>& a, const Matrix<T>& b) {
   size_t rows_a, columns_a;
