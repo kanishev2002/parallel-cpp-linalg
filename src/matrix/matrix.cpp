@@ -40,14 +40,14 @@ Matrix<T>::Matrix(const Matrix<T>& other) {
 template <typename T>
 Matrix<T>::Matrix(Matrix<T>&& other) noexcept {
   std::unique_lock this_un_lock(shared_mtx_);
-  std::shared_lock other_sh_lock(other.shared_mtx_);
+  std::unique_lock other_un_lock(other.shared_mtx_);
   matrix_ = std::move(other.matrix_);
 }
 
 template <typename T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
   std::unique_lock this_un_lock(shared_mtx_);
-  std::unique_lock other_sh_lock(other.shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
 
   if (this == &other) {
     return *this;
@@ -60,13 +60,13 @@ Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
 template <typename T>
 Matrix<T>& Matrix<T>::operator=(Matrix<T>&& other) noexcept {
   std::unique_lock this_un_lock(shared_mtx_);
-  std::unique_lock other_sh_lock(other.shared_mtx_);
+  std::unique_lock other_un_lock(other.shared_mtx_);
 
   if (this == &other) {
     return *this;
   }
 
-  matrix_ = other.matrix_;
+  matrix_ = std::move(other.matrix_);
   return *this;
 }
 
