@@ -1,11 +1,12 @@
-#include "../../include/matrix.h"
+#include <include/matrix.h>
+#include <include/thread_pool.h>
 
 #include <atomic>
 #include <iostream>
 #include <thread>
 
-template <typename T>
-Matrix<T>::Matrix(size_t rows, size_t columns) {
+
+constexpr Matrix<T>::Matrix(size_t rows, size_t columns) {
   matrix_.resize(rows, std::vector<T>(columns));
 }
 
@@ -39,14 +40,15 @@ Matrix<T>::Matrix(const Matrix<T>& other) {
 template <typename T>
 Matrix<T>::Matrix(Matrix<T>&& other) noexcept {
   std::unique_lock this_un_lock(shared_mtx_);
-  std::shared_lock other_sh_lock(other.shared_mtx_);
-  matrix_ = other.matrix_;
+  std::unique_lock other_un_lock(other.shared_mtx_);
+  matrix_ = std::move(other.matrix_);
+
 }
 
 template <typename T>
 Matrix<T>& Matrix<T>::operator=(const Matrix<T>& other) {
   std::unique_lock this_un_lock(shared_mtx_);
-  std::unique_lock other_un_lock(other.shared_mtx_);
+  std::shared_lock other_sh_lock(other.shared_mtx_);
 
   if (this == &other) {
     return *this;
@@ -65,7 +67,8 @@ Matrix<T>& Matrix<T>::operator=(Matrix<T>&& other) noexcept {
     return *this;
   }
 
-  matrix_ = other.matrix_;
+  matrix_ = std::move(other.matrix_);
+  
   return *this;
 }
 
@@ -86,14 +89,12 @@ bool Matrix<T>::operator==(const Matrix<T>& other) const {
     return;
   };
 
-  std::vector<std::thread> threads;
-  for (size_t i = 0; i < shape().first; ++i) {
-    threads.emplace_back(
-        [&, i]() { compare_vectors(matrix_[i], other.matrix_[i]); });
-  }
-
-  for (auto& thr : threads) {
-    thr.join();
+  {
+    ThreadPool pool;
+    for (size_t i = 0; i < shape().first; ++i) {
+      pool.enqueue_task(
+          [&, i]() { compare_vectors(matrix_[i], other.matrix_[i]); });
+    }
   }
   return equal.load();
 }
@@ -142,20 +143,21 @@ template <typename T>
 Matrix<T> Matrix<T>::operator*(const T& other_const) const {
   std::shared_lock sh_lock(shared_mtx_);
   auto [rows, columns] = shape();
-  Matrix<T> result(rows, columns);
-  std::vector<std::thread> threads;
-  for (size_t i = 0; i < shape().first; ++i) {
-    threads.emplace_back([&, i]() {
-      std::vector<T> new_row(matrix_[i]);
-      for (size_t j = 0; j < shape().second; ++j) {
-        new_row[j] *= other_const;
-      }
-      result.matrix_[i] = new_row;
-    });
+
+  Matrix<T> result(rows, 0);
+  {
+    ThreadPool pool;
+    for (size_t i = 0; i < shape().first; ++i) {
+      pool.enqueue_task([&, i]() {
+        std::vector<T> new_row(matrix_[i]);
+        for (size_t j = 0; j < shape().second; ++j) {
+          new_row[j] *= other_const;
+        }
+        result.matrix_[i] = std::move(new_row);
+      });
+    }
   }
-  for (auto& thr : threads) {
-    thr.join();
-  }
+  
   return result;
 }
 
@@ -187,19 +189,19 @@ template <typename T>
 Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
   std::unique_lock un_lock(shared_mtx_);
   auto [rows, columns] = shape();
-  std::vector<std::vector<T>> result(rows, std::vector<T>(columns));
-  std::vector<std::thread> threads;
-  for (size_t i = 0; i < shape().first; ++i) {
-    threads.emplace_back([&, i]() {
-      std::vector<T> new_row(matrix_[i]);
-      for (size_t j = 0; j < shape().second; ++j) {
-        new_row[j] *= other_const;
-      }
-      result[i] = new_row;
-    });
-  }
-  for (auto& thr : threads) {
-    thr.join();
+
+  std::vector<std::vector<T>> result(rows);
+  {
+    ThreadPool pool;
+    for (size_t i = 0; i < shape().first; ++i) {
+      pool.enqueue_task([&, i]() {
+        std::vector<T> new_row(matrix_[i]);
+        for (size_t j = 0; j < shape().second; ++j) {
+          new_row[j] *= other_const;
+        }
+        result[i] = std::move(new_row);
+      });
+    }
   }
   matrix_ = std::move(result);
   return *this;
@@ -233,30 +235,19 @@ Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other,
     }
   };
   auto [rows, columns] = shape();
-  Matrix<T> result(rows, columns);
-  std::vector<std::thread> threads;
-  for (size_t i = 0; i < shape().first; ++i) {
-    threads.emplace_back([&, i]() {
-      std::vector<T> new_row(matrix_[i]);
-      for (size_t j = 0; j < shape().second; ++j) {
-        new_row[j] = func(new_row[j], other.matrix_[i][j]);
-      }
-      result.matrix_[i] = new_row;
-    });
-  }
-  for (auto& thr : threads) {
-    thr.join();
-  }
-  return result;
-}
 
-template<typename T>
-Matrix<T> Matrix<T>::eye(size_t size) {
-  Matrix<T> result(size, size);
-  size_t index = 0;
-  auto default_val = T(1);
-  for (const auto& row : result.matrix_) {
-    row[index++] = default_val;
+  Matrix<T> result(rows, 0);
+  {
+    ThreadPool pool;
+    for (size_t i = 0; i < shape().first; ++i) {
+      pool.enqueue_task([&, i]() {
+        std::vector<T> new_row(matrix_[i]);
+        for (size_t j = 0; j < shape().second; ++j) {
+          new_row[j] = func(new_row[j], other.matrix_[i][j]);
+        }
+        result.matrix_[i] = std::move(new_row);
+      });
+    }
   }
   return result;
 }

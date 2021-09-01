@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 #include <shared_mutex>
 #include <thread>
@@ -10,11 +11,11 @@ class Matrix {
   std::vector<std::vector<T>> matrix_;
 
   Matrix<T> basic_binary_op_(const Matrix<T>& other, char func_type) const;
-  mutable std::shared_mutex shared_mtx_;
+
 
  public:
   Matrix() = default;
-  Matrix(size_t rows, size_t columns);
+  constexpr Matrix(size_t rows, size_t columns);
   Matrix(const std::vector<T>& vec);
   Matrix(std::vector<T>&& vec);
   Matrix(const std::vector<std::vector<T>>& matrix);
@@ -46,8 +47,6 @@ class Matrix {
 
   std::pair<size_t, size_t> shape() const;
 
-  static Matrix<T> eye(size_t size);
-};
 
-template<typename T>
-std::ostream& operator<<(std::ostream& out, const Matrix<T>& mat);
+  mutable std::shared_mutex shared_mtx_;
+};

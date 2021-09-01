@@ -12,3 +12,6 @@ The project is done by me, [InfinityZxc](https://github.com/InfinityZxc) and [0m
 
 ## License
 The library is licensed under the MIT license.
+
+## Documentation
+For docs see [DOCUMENTATION](./DOCUMENTATION.md)
