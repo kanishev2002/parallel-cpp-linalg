@@ -1,0 +1,13 @@
+.idea
+.vscode
+Matrix/.idea
+Makefile
+CMakeCache.txt
+CMakeFiles
+cmake-*
+cmake_*
+build
+_deps
+lib
+*.a
+*.cmake
