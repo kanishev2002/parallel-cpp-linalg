@@ -5,7 +5,7 @@
 #include <iostream>
 #include <thread>
 
-template <typename T>
+
 constexpr Matrix<T>::Matrix(size_t rows, size_t columns) {
   matrix_.resize(rows, std::vector<T>(columns));
 }
@@ -42,6 +42,7 @@ Matrix<T>::Matrix(Matrix<T>&& other) noexcept {
   std::unique_lock this_un_lock(shared_mtx_);
   std::unique_lock other_un_lock(other.shared_mtx_);
   matrix_ = std::move(other.matrix_);
+
 }
 
 template <typename T>
@@ -67,6 +68,7 @@ Matrix<T>& Matrix<T>::operator=(Matrix<T>&& other) noexcept {
   }
 
   matrix_ = std::move(other.matrix_);
+  
   return *this;
 }
 
@@ -86,6 +88,7 @@ bool Matrix<T>::operator==(const Matrix<T>& other) const {
     }
     return;
   };
+
   {
     ThreadPool pool;
     for (size_t i = 0; i < shape().first; ++i) {
@@ -140,6 +143,7 @@ template <typename T>
 Matrix<T> Matrix<T>::operator*(const T& other_const) const {
   std::shared_lock sh_lock(shared_mtx_);
   auto [rows, columns] = shape();
+
   Matrix<T> result(rows, 0);
   {
     ThreadPool pool;
@@ -153,7 +157,7 @@ Matrix<T> Matrix<T>::operator*(const T& other_const) const {
       });
     }
   }
-
+  
   return result;
 }
 
@@ -185,6 +189,7 @@ template <typename T>
 Matrix<T>& Matrix<T>::operator*=(const T& other_const) {
   std::unique_lock un_lock(shared_mtx_);
   auto [rows, columns] = shape();
+
   std::vector<std::vector<T>> result(rows);
   {
     ThreadPool pool;
@@ -230,6 +235,7 @@ Matrix<T> Matrix<T>::basic_binary_op_(const Matrix<T>& other,
     }
   };
   auto [rows, columns] = shape();
+
   Matrix<T> result(rows, 0);
   {
     ThreadPool pool;

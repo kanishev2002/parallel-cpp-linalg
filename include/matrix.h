@@ -12,6 +12,7 @@ class Matrix {
 
   Matrix<T> basic_binary_op_(const Matrix<T>& other, char func_type) const;
 
+
  public:
   Matrix() = default;
   constexpr Matrix(size_t rows, size_t columns);
@@ -45,6 +46,7 @@ class Matrix {
   std::vector<T>& operator[](size_t index);
 
   std::pair<size_t, size_t> shape() const;
+
 
   mutable std::shared_mutex shared_mtx_;
 };
